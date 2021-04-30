@@ -159,6 +159,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "target",
             "question",
             "help_text",
+            "require_after",
             "variant",
             "is_public",
             "is_visible_to_reviewers",

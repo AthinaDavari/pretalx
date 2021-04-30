@@ -170,6 +170,9 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "min_length",
             "max_length",
         ]
+        widgets = {
+            "require_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+        }
         field_classes = {
             "variant": SafeModelChoiceField,
             "tracks": SafeModelMultipleChoiceField,

@@ -159,6 +159,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "target",
             "question",
             "help_text",
+            "question_required",
             "require_after",
             "variant",
             "is_public",
@@ -171,7 +172,8 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "max_length",
         ]
         widgets = {
-            "require_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+            "require_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "question_required": forms.RadioSelect()
         }
         field_classes = {
             "variant": SafeModelChoiceField,

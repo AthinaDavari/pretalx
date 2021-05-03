@@ -61,6 +61,18 @@ class QuestionTarget(Choices):
     ]
 
 
+class QuestionRequired(Choices):
+    NONE = "none"
+    REQUIRE_AFTER = "require after"
+    FREEZE_AFTER = "freeze after"
+
+    valid_choices = [
+        (NONE, _("always permitted")),
+        (REQUIRE_AFTER, _("require after deadline")),
+        (FREEZE_AFTER, _("freeze after deadline")),
+    ]
+
+
 class Question(LogMixin, models.Model):
     """Questions can be asked per.
 
@@ -97,11 +109,25 @@ class Question(LogMixin, models.Model):
             "Do you require an answer from every speaker or for every session?"
         ),
     )
-    require_after = models.DateTimeField(null=True,
-                                         blank=True,
-                                         verbose_name=_("require after"),
-                                         help_text=_(
-                                             "Make an answer optional before this deadline, and mandatory (form-wise) afterwards"), )
+    require_after = models.DateTimeField(
+         null=True,
+         blank=True,
+         verbose_name=_("require after"),
+         help_text=_(
+             "Make an answer optional before this deadline, and mandatory (form-wise) afterwards"
+         ),
+    )
+
+    question_required = models.CharField(
+        max_length=QuestionRequired.get_max_length(),
+        choices=QuestionRequired.get_choices(),
+        default=QuestionRequired.NONE,
+        verbose_name=_("question required"),
+        help_text=_(
+            "Should the question be required or frozen after a deadline?"
+        ),
+    )
+
     tracks = models.ManyToManyField(
         to="submission.Track",
         related_name="questions",

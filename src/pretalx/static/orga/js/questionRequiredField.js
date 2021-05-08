@@ -1,4 +1,10 @@
 jQuery(function($) {
+     $(document).ready(function () { //function will wait for the page to fully load before executing
+         if($("#id_question_required_0").is(':checked')) {
+              $("#id_require_after").attr("disabled", true);
+              $("#id_require_after").attr("required", false);
+          }
+             });
     $("#id_question_required_1, #id_question_required_2").click(function () {
         $("#id_require_after").attr("disabled", false);
         $("#id_require_after").attr("required", true);
@@ -9,3 +15,4 @@ jQuery(function($) {
         $("#id_require_after").attr("required", false);
     });
 })
+

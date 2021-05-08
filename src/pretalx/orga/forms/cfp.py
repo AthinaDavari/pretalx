@@ -134,9 +134,9 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
         if not (
-                event.settings.use_tracks
-                and event.tracks.all().count()
-                and event.settings.cfp_request_track
+            event.settings.use_tracks
+            and event.tracks.all().count()
+            and event.settings.cfp_request_track
         ):
             self.fields.pop("tracks")
         else:
@@ -146,24 +146,30 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         else:
             self.fields["submission_types"].queryset = event.submission_types.all()
         if (
-                instance
-                and instance.pk
-                and instance.answers.count()
-                and not instance.is_public
+            instance
+            and instance.pk
+            and instance.answers.count()
+            and not instance.is_public
         ):
             self.fields["is_public"].disabled = True
 
     def clean(self):
-        require_after = self.cleaned_data['require_after']
-        question_required = self.cleaned_data['question_required']
-        if (require_after == "" or require_after is None) and (question_required == "require after" or question_required == "freeze after"):
+        deadline = self.cleaned_data["deadline"]
+        question_required = self.cleaned_data["question_required"]
+        if (deadline == "" or deadline is None) and (
+            question_required == "require after" or question_required == "freeze after"
+        ):
             raise forms.ValidationError(
-                "If you select 'freeze after deadline' or 'require after deadline' choice you " +
-                "should select the date and time deadline.")
-        if (require_after != "" and require_after is not None) and question_required == "none":
+                "If you select 'freeze after deadline' or 'require after deadline' choice you "
+                + "should select the date and time deadline."
+            )
+        if (deadline != "" and deadline is not None) and (
+            question_required == "none" or question_required == "require"
+        ):
             raise forms.ValidationError(
-                "If you select 'NONE' in Question required you shouldn't select the date and time deadline.")
-
+                "If you select 'always optional' or 'always required' in Question required "
+                "you shouldn't select the date and time deadline."
+            )
 
     class Meta:
         model = Question
@@ -185,7 +191,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         ]
         widgets = {
             "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "question_required": forms.RadioSelect()
+            "question_required": forms.RadioSelect(),
         }
         field_classes = {
             "variant": SafeModelChoiceField,
@@ -293,39 +299,39 @@ class AccessCodeSendForm(forms.Form):
         self.access_code = instance
         subject = _("Access code for the {event} CfP").format(event=instance.event.name)
         text = (
-                str(
-                    _(
-                        """Hi!
+            str(
+                _(
+                    """Hi!
     
     This is an access code for the {event} CfP."""
-                    ).format(event=instance.event.name)
-                )
-                + " "
+                ).format(event=instance.event.name)
+            )
+            + " "
         )
         if instance.track:
             text += (
-                    str(
-                        _(
-                            "It will allow you to submit a proposal to the “{track}” track."
-                        ).format(track=instance.track.name)
-                    )
-                    + " "
+                str(
+                    _(
+                        "It will allow you to submit a proposal to the “{track}” track."
+                    ).format(track=instance.track.name)
+                )
+                + " "
             )
         else:
             text += str(_("It will allow you to submit a proposal to our CfP.")) + " "
         if instance.valid_until:
             text += (
-                    str(
-                        _("This access code is valid until {date}.").format(
-                            date=instance.valid_until.strftime("%Y-%m-%d %H:%M")
-                        )
+                str(
+                    _("This access code is valid until {date}.").format(
+                        date=instance.valid_until.strftime("%Y-%m-%d %H:%M")
                     )
-                    + " "
+                )
+                + " "
             )
         if (
-                instance.maximum_uses
-                and instance.maximum_uses != 1
-                and instance.maximum_uses - instance.redeemed > 1
+            instance.maximum_uses
+            and instance.maximum_uses != 1
+            and instance.maximum_uses - instance.redeemed > 1
         ):
             text += str(
                 _("The code can be redeemed multiple times ({num}).").format(
@@ -413,18 +419,18 @@ class QuestionFilterForm(forms.Form):
         if question.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
             grouped_answers = (
                 answers.order_by("options")
-                    .values("options", "options__answer")
-                    .annotate(count=Count("id"))
-                    .order_by("-count")
+                .values("options", "options__answer")
+                .annotate(count=Count("id"))
+                .order_by("-count")
             )
         elif question.variant == QuestionVariant.FILE:
             grouped_answers = [{"answer": answer, "count": 1} for answer in answers]
         else:
             grouped_answers = (
                 answers.order_by("answer")
-                    .values("answer")
-                    .annotate(count=Count("id"))
-                    .order_by("-count")
+                .values("answer")
+                .annotate(count=Count("id"))
+                .order_by("-count")
             )
         result["grouped_answers"] = grouped_answers
         return result

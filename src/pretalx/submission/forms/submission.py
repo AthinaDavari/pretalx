@@ -253,7 +253,7 @@ class SubmissionFilterForm(forms.Form):
             for track in event.tracks.all()
         ]
         self.fields["track"].widget.attrs["title"] = _("Tracks")
-        self.fields["question"].queryset = event.questions.all()
+        self.fields["question"].queryset = event.questions.z()
         self.fields["tags"].widget.attrs["title"] = _("Tags")
         if not self.event.tags.all().exists():
             self.fields.pop("tags")

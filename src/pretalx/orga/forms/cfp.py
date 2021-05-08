@@ -160,7 +160,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "question",
             "help_text",
             "question_required",
-            "require_after",
+            "deadline",
             "variant",
             "is_public",
             "is_visible_to_reviewers",
@@ -172,7 +172,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "max_length",
         ]
         widgets = {
-            "require_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
             "question_required": forms.RadioSelect()
         }
         field_classes = {

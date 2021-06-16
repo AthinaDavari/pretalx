@@ -94,20 +94,28 @@ class QuestionFieldsMixin:
         # Check (with question_required field) if the question should be required
         if question.question_required == "require":
             require_question = True
+            disable_question = False
         elif question.question_required == "require after":
             now = datetime.datetime.now()
             if question.deadline > tz.localize(now):
                 require_question = False
             else:
                 require_question = True
+            disable_question = False
         elif question.question_required == "freeze after":
             now = datetime.datetime.now()
             if question.deadline > tz.localize(now):
                 require_question = True
+                disable_question = False
             else:
                 require_question = False
+                disable_question = True
         else:
             require_question = False
+            disable_question = False
+
+        if readonly == True:
+            disable_question = True
 
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)
@@ -124,7 +132,7 @@ class QuestionFieldsMixin:
             )
 
             field = forms.BooleanField(
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=help_text,
                 label=question.question,
                 required=require_question,
@@ -137,7 +145,7 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.NUMBER:
             field = forms.DecimalField(
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=help_text,
                 label=question.question,
                 required=require_question,
@@ -149,7 +157,7 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.STRING:
             field = forms.CharField(
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=get_help_text(
                     help_text,
                     question.min_length,
@@ -178,7 +186,7 @@ class QuestionFieldsMixin:
                 label=question.question,
                 required=require_question,
                 widget=forms.Textarea,
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=get_help_text(
                     help_text,
                     question.min_length,
@@ -204,7 +212,7 @@ class QuestionFieldsMixin:
             field = SizeFileField(
                 label=question.question,
                 required=require_question,
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=help_text,
                 initial=initial,
             )
@@ -222,7 +230,7 @@ class QuestionFieldsMixin:
                 initial=initial_object.options.first()
                 if initial_object
                 else question.default_answer,
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=help_text,
                 widget=forms.RadioSelect if len(choices) < 4 else None,
             )
@@ -238,7 +246,7 @@ class QuestionFieldsMixin:
                 initial=initial_object.options.all()
                 if initial_object
                 else question.default_answer,
-                disabled=readonly,
+                disabled=disable_question,
                 help_text=help_text,
             )
             field.original_help_text = original_help_text

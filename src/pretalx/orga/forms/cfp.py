@@ -182,7 +182,6 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "variant",
             "is_public",
             "is_visible_to_reviewers",
-            "required",
             "tracks",
             "submission_types",
             "contains_personal_data",

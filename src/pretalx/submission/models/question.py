@@ -1,5 +1,3 @@
-from ctypes.wintypes import RECT
-
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _

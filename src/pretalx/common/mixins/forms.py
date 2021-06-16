@@ -1,5 +1,7 @@
+import datetime
 from decimal import Decimal
 from functools import partial
+import pytz
 
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
@@ -87,6 +89,26 @@ class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
 
+        tz = pytz.timezone(question.event.timezone)
+
+        # Check (with question_required field) if the question should be required
+        if question.question_required == "always required":
+            require_question = True
+        elif question.question_required == "require after deadline":
+            now = datetime.datetime.now()
+            if question.deadline > tz.localize(now):
+                require_question = True
+            else:
+                require_question = False
+        elif question.question_required == "freeze after deadline":
+            now = datetime.datetime.now()
+            if question.deadline > tz.localize(now):
+                require_question = False
+            else:
+                require_question = True
+        else:
+            require_question = False
+
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)
         if question.is_public and self.event.settings.show_schedule:
@@ -105,7 +127,7 @@ class QuestionFieldsMixin:
                 disabled=readonly,
                 help_text=help_text,
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 widget=widget,
                 initial=(initial == "True")
                 if initial
@@ -118,7 +140,7 @@ class QuestionFieldsMixin:
                 disabled=readonly,
                 help_text=help_text,
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 min_value=Decimal("0.00"),
                 initial=initial,
             )
@@ -135,7 +157,7 @@ class QuestionFieldsMixin:
                     self.event.settings.cfp_count_length_in,
                 ),
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 initial=initial,
                 min_length=question.min_length if count_chars else None,
                 max_length=question.max_length if count_chars else None,
@@ -154,7 +176,7 @@ class QuestionFieldsMixin:
         if question.variant == QuestionVariant.TEXT:
             field = forms.CharField(
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 widget=forms.Textarea,
                 disabled=readonly,
                 help_text=get_help_text(
@@ -181,7 +203,7 @@ class QuestionFieldsMixin:
         if question.variant == QuestionVariant.FILE:
             field = SizeFileField(
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 disabled=readonly,
                 help_text=help_text,
                 initial=initial,
@@ -191,10 +213,11 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.CHOICES:
             choices = question.options.all()
+            now = datetime.datetime.now()
             field = forms.ModelChoiceField(
                 queryset=choices,
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 empty_label=None,
                 initial=initial_object.options.first()
                 if initial_object
@@ -210,7 +233,7 @@ class QuestionFieldsMixin:
             field = forms.ModelMultipleChoiceField(
                 queryset=question.options.all(),
                 label=question.question,
-                required=question.required,
+                required=require_question,
                 widget=forms.CheckboxSelectMultiple,
                 initial=initial_object.options.all()
                 if initial_object

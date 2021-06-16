@@ -92,20 +92,20 @@ class QuestionFieldsMixin:
         tz = pytz.timezone(question.event.timezone)
 
         # Check (with question_required field) if the question should be required
-        if question.question_required == "always required":
+        if question.question_required == "require":
             require_question = True
-        elif question.question_required == "require after deadline":
-            now = datetime.datetime.now()
-            if question.deadline > tz.localize(now):
-                require_question = True
-            else:
-                require_question = False
-        elif question.question_required == "freeze after deadline":
+        elif question.question_required == "require after":
             now = datetime.datetime.now()
             if question.deadline > tz.localize(now):
                 require_question = False
             else:
                 require_question = True
+        elif question.question_required == "freeze after":
+            now = datetime.datetime.now()
+            if question.deadline > tz.localize(now):
+                require_question = True
+            else:
+                require_question = False
         else:
             require_question = False
 

@@ -29,7 +29,7 @@ def test_question_serializer(answer):
         "id",
         "variant",
         "question",
-        "required",
+        "question_required",
         "target",
         "options",
         "help_text",

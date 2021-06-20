@@ -30,6 +30,7 @@ def test_question_serializer(answer):
         "variant",
         "question",
         "question_required",
+        "deadline",
         "target",
         "options",
         "help_text",

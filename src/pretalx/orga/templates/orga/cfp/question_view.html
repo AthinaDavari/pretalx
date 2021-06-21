@@ -29,7 +29,7 @@
             <tr>
                 <th>{% translate "Question" %}</th>
                 <th>{% translate "Target" %}</th>
-                <th>require now</th>
+                <th>{% translate "require" %}</th>
                 <th>{% translate "active" %}</th>
                 <th></th>
             </tr>
@@ -46,29 +46,21 @@
                         {{ question.get_target_display }}
                     </td>
                     <td>
-
                         {% if question.question_required == "require" %}
-                            <i class="fa fa-check-circle text-success"/>
+                            {% translate "always" %}
                         {% elif question.question_required == "require after"%}
-                            {% if question.deadline|timezone:question.event.timezone|date:"%Y-%m-%d %H:%M:%S.%f" > now|timezone:question.event.timezone|date:"%Y-%m-%d %H:%M:%S.%f" %}
-                                <i class="fa fa-times-circle text-danger"/>
-                            {% else %}
-                                <i class="fa fa-check-circle text-success"/>
-                            {% endif %}
+                            {% translate "after" %}
                         {% elif question.question_required == "freeze after"%}
-                            {% if question.deadline|timezone:question.event.timezone|date:"%Y-%m-%d %H:%M:%S.%f" > now|timezone:question.event.timezone|date:"%Y-%m-%d %H:%M:%S.%f" %}
-                                <i class="fa fa-check-circle text-success"/>
-                            {% else %}
-                                <i class="fa fa-times-circle text-danger"/>
-                            {% endif %}
+                            {% translate "before" %}
                         {% else %}
-                            <i class="fa fa-times-circle text-danger"/>
+                            {% translate "never" %}
                         {% endif %}
-
+                        {% if question.deadline %}
+                            {{ question.deadline|timezone:question.event.timezone }}
+                        {% endif %}
                     </td>
                     <td>
                         <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
-
                         </i>
                     </td>
                     <td class="action-column">
@@ -98,6 +90,7 @@
                         </a>
                     </td>
                 </tr>
+
             {% empty %}
                 <tr>
                     <td colspan=3 class="w-75">{% translate "You have configured no questions yet." %}</td>
@@ -110,4 +103,5 @@
             {% endfor %}
         </tbody>
     </table>
+
 {% endblock %}

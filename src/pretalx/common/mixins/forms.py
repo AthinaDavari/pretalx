@@ -114,7 +114,7 @@ class QuestionFieldsMixin:
             require_question = False
             disable_question = False
 
-        if readonly == True:
+        if readonly:
             disable_question = True
 
         original_help_text = question.help_text

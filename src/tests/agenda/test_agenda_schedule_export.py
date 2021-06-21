@@ -248,9 +248,9 @@ def test_feed_view(slot, client, django_assert_num_queries, schedule):
 
 @pytest.mark.django_db
 def test_html_export_event_required():
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     with pytest.raises(CommandError) as excinfo:
         call_command("export_schedule_html")
@@ -260,9 +260,9 @@ def test_html_export_event_required():
 
 @pytest.mark.django_db
 def test_html_export_event_unknown(event):
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     with pytest.raises(CommandError) as excinfo:
         call_command("export_schedule_html", "foobar222")
@@ -302,9 +302,9 @@ def test_html_export_release_without_celery(mocker, event):
 def test_html_export_release_with_celery(mocker, event):
     mocker.patch("django.core.management.call_command")
 
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     with scope(event=event):
         event.cache.delete("rebuild_schedule_export")
@@ -319,9 +319,9 @@ def test_html_export_release_with_celery(mocker, event):
 def test_html_export_release_disabled(mocker, event):
     mocker.patch("django.core.management.call_command")
 
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     with scope(event=event):
         event.settings.export_html_on_schedule_release = False
@@ -333,9 +333,9 @@ def test_html_export_release_disabled(mocker, event):
 @pytest.mark.django_db
 def test_html_export_language(event, slot):
 
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     event.locale = "de"
     event.locale_array = "de,en"
@@ -354,9 +354,9 @@ def test_html_export_language(event, slot):
 @pytest.mark.django_db
 def test_schedule_export_schedule_html_task(mocker, event, slot):
     mocker.patch("django.core.management.call_command")
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     export_schedule_html.apply_async(kwargs={"event_id": event.id})
 
@@ -366,9 +366,9 @@ def test_schedule_export_schedule_html_task(mocker, event, slot):
 @pytest.mark.django_db
 def test_schedule_export_schedule_html_task_nozip(mocker, event, slot):
     mocker.patch("django.core.management.call_command")
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     export_schedule_html.apply_async(kwargs={"event_id": event.id, "make_zip": False})
     call_command.assert_called_with("export_schedule_html", event.slug)
@@ -441,9 +441,9 @@ def test_html_export_full(
     orga_client,
     django_assert_max_num_queries,
 ):
-    from django.core.management import (
+    from django.core.management import (  # Import here to avoid overriding mocks
         call_command,
-    )  # Import here to avoid overriding mocks
+    )
 
     event.primary_color = "#111111"
     event.is_public = False

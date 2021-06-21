@@ -304,7 +304,7 @@ class AccessCodeSendForm(forms.Form):
             str(
                 _(
                     """Hi!
-    
+
     This is an access code for the {event} CfP."""
                 ).format(event=instance.event.name)
             )

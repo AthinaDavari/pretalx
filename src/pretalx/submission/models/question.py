@@ -19,9 +19,9 @@ class QuestionManager(models.Manager):
     def get_queryset(self):
         return (
             super()
-            .get_queryset()
-            .exclude(active=False)
-            .exclude(target=QuestionTarget.REVIEWER)
+                .get_queryset()
+                .exclude(active=False)
+                .exclude(target=QuestionTarget.REVIEWER)
         )
 
 
@@ -89,8 +89,16 @@ class Question(LogMixin, models.Model):
         ``QuestionVariant`` class.
     :param target: Can be any of 'submission', 'speaker', or 'reviewer'.
         Defined in the ``QuestionTarget`` class.
-    :param required: If this is ``True``, the answer must be given at
-        submission time. On boolean questions: must check box.
+    :param deadline: Datetime field. This field is required for 'require after' and 'freeze after' options of
+        question_required field and optional for the other ones. For 'require after' it shows that the answer will
+        be optional before the deadline and mandatory after that deadline. For 'freeze after' it shows that the
+        answer will be allowed before the deadline and frozen after that deadline
+    :param question_required: Can be any of 'none', 'require ', 'require after', or 'freeze after'.
+        Defined in the ``QuestionRequired`` class.
+        For 'always required' answering this question will always be required.
+        For 'always optional' means that it will never be mandatory.
+        For 'require after' the answer will be optional before the deadline and mandatory after the deadline.
+        For 'freeze after' the answer will be allowed before the deadline and frozen after the deadline.
     :param position: Position in the question order in this event.
     """
 
@@ -162,8 +170,8 @@ class Question(LogMixin, models.Model):
         max_length=800,
         verbose_name=_("help text"),
         help_text=_("Will appear just like this text below the question input field.")
-        + " "
-        + phrases.base.use_markdown,
+                  + " "
+                  + phrases.base.use_markdown,
     )
     default_answer = models.TextField(
         null=True, blank=True, verbose_name=_("default answer")
@@ -226,7 +234,7 @@ class Question(LogMixin, models.Model):
         return str(self.question)
 
     def missing_answers(
-        self, filter_speakers: list = False, filter_talks: list = False
+            self, filter_speakers: list = False, filter_talks: list = False
     ) -> int:
         """Returns how many answers are still missing or this question.
 

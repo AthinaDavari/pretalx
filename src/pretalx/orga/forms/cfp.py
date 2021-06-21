@@ -1,3 +1,6 @@
+import datetime
+
+import pytz
 from django import forms
 from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
@@ -444,7 +447,18 @@ class ReminderFilterForm(QuestionFilterForm):
     )
 
     def get_question_queryset(self):
-        return Question.objects.filter(
+        questions = Question.objects.all()
+        now = datetime.datetime.now()
+        # We want to exclude questions with "freeze after", the deadlines of which have passed
+        questions_frozen = set()
+        for q in questions:
+            tz = pytz.timezone(q.event.timezone)
+            if q.question_required == "freeze after" and q.deadline < tz.localize(now):
+                questions_frozen.add(q.id)
+
+        questions.filter(id__in=questions_frozen).delete()
+
+        return questions.filter(
             event=self.event,
             target__in=["speaker", "submission"],
         )

@@ -1,8 +1,8 @@
 import datetime
 from decimal import Decimal
 from functools import partial
-import pytz
 
+import pytz
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.translation import gettext_lazy as _

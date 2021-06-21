@@ -19,9 +19,9 @@ class QuestionManager(models.Manager):
     def get_queryset(self):
         return (
             super()
-                .get_queryset()
-                .exclude(active=False)
-                .exclude(target=QuestionTarget.REVIEWER)
+            .get_queryset()
+            .exclude(active=False)
+            .exclude(target=QuestionTarget.REVIEWER)
         )
 
 
@@ -170,8 +170,8 @@ class Question(LogMixin, models.Model):
         max_length=800,
         verbose_name=_("help text"),
         help_text=_("Will appear just like this text below the question input field.")
-                  + " "
-                  + phrases.base.use_markdown,
+        + " "
+        + phrases.base.use_markdown,
     )
     default_answer = models.TextField(
         null=True, blank=True, verbose_name=_("default answer")
@@ -234,7 +234,7 @@ class Question(LogMixin, models.Model):
         return str(self.question)
 
     def missing_answers(
-            self, filter_speakers: list = False, filter_talks: list = False
+        self, filter_speakers: list = False, filter_talks: list = False
     ) -> int:
         """Returns how many answers are still missing or this question.
 

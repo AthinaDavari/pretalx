@@ -56,7 +56,7 @@
                             {% translate "never" %}
                         {% endif %}
                         {% if question.deadline %}
-                            {{ question.deadline|timezone:question.event.timezone }}
+                            {{ question.deadline }}
                         {% endif %}
                     </td>
                     <td>

@@ -125,8 +125,7 @@ class Question(LogMixin, models.Model):
         blank=True,
         verbose_name=_("deadline"),
         help_text=_(
-            "This field is required for 'require after' and 'freeze after' options "
-            "and optional for the other ones."
+            "Set a deadline to make this question required or to freeze changes after the given date."
         ),
     )
 

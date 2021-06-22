@@ -29,7 +29,7 @@
             <tr>
                 <th>{% translate "Question" %}</th>
                 <th>{% translate "Target" %}</th>
-                <th>{% translate "require" %}</th>
+                <th>{% translate "required" %}</th>
                 <th>{% translate "active" %}</th>
                 <th></th>
             </tr>
@@ -56,7 +56,7 @@
                             {% translate "never" %}
                         {% endif %}
                         {% if question.deadline %}
-                            {{ question.deadline|timezone:question.event.timezone }}
+                            {{ question.deadline }}
                         {% endif %}
                     </td>
                     <td>

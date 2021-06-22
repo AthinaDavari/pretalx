@@ -1,7 +1,7 @@
-import datetime
+import datetime as dt
 from decimal import Decimal
 from functools import partial
-import pytz
+from django.utils import timezone
 
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
@@ -89,22 +89,20 @@ class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
         from pretalx.submission.models import QuestionVariant
 
-        tz = pytz.timezone(question.event.timezone)
-
         # Check (with question_required field) if the question should be required
         if question.question_required == "require":
             require_question = True
             disable_question = False
         elif question.question_required == "require after":
-            now = datetime.datetime.now()
-            if question.deadline > tz.localize(now):
+            now = timezone.now()
+            if question.deadline > now:
                 require_question = False
             else:
                 require_question = True
             disable_question = False
         elif question.question_required == "freeze after":
-            now = datetime.datetime.now()
-            if question.deadline > tz.localize(now):
+            now = timezone.now()
+            if question.deadline > now:
                 require_question = True
                 disable_question = False
             else:
@@ -221,7 +219,7 @@ class QuestionFieldsMixin:
             return field
         if question.variant == QuestionVariant.CHOICES:
             choices = question.options.all()
-            now = datetime.datetime.now()
+            now = dt.datetime.now()
             field = forms.ModelChoiceField(
                 queryset=choices,
                 label=question.question,

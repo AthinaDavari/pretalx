@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import pytz
 from django import forms
@@ -448,7 +448,7 @@ class ReminderFilterForm(QuestionFilterForm):
 
     def get_question_queryset(self):
         questions = Question.objects.all()
-        now = datetime.datetime.now()
+        now = dt.datetime.now()
         # We want to exclude questions with "freeze after", the deadlines of which have passed
         questions_frozen = set()
         for q in questions:

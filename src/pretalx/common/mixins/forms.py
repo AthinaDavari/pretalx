@@ -1,8 +1,8 @@
 import datetime as dt
 from decimal import Decimal
 from functools import partial
-from django.utils import timezone
 
+from django.utils import timezone
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.translation import gettext_lazy as _
@@ -112,7 +112,7 @@ class QuestionFieldsMixin:
             require_question = False
             disable_question = False
 
-        if readonly == True:
+        if readonly:
             disable_question = True
 
         original_help_text = question.help_text

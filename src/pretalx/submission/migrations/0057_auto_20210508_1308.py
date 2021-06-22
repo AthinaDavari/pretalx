@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('submission', '0056_reviewscorecategory_is_independent'),
+        ("submission", "0056_reviewscorecategory_is_independent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='deadline',
+            model_name="question",
+            name="deadline",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='question',
-            name='question_required',
-            field=models.CharField(default='none', max_length=13),
+            model_name="question",
+            name="question_required",
+            field=models.CharField(default="none", max_length=13),
         ),
     ]

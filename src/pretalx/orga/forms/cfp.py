@@ -159,14 +159,14 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (deadline == "" or deadline is None) and (
+        if (not deadline) and (
             question_required == "require after" or question_required == "freeze after"
         ):
             raise forms.ValidationError(
                 _("If you select 'freeze after deadline' or 'require after deadline' choice you "
                 + "should select the date and time deadline.")
             )
-        if (deadline != "" and deadline is not None) and (
+        if deadline and (
             question_required == "none" or question_required == "require"
         ):
             raise forms.ValidationError(

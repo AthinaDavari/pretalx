@@ -163,15 +163,15 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             question_required == "require after" or question_required == "freeze after"
         ):
             raise forms.ValidationError(
-                "If you select 'freeze after deadline' or 'require after deadline' choice you "
-                + "should select the date and time deadline."
+                _("If you select 'freeze after deadline' or 'require after deadline' choice you "
+                + "should select the date and time deadline.")
             )
         if (deadline != "" and deadline is not None) and (
             question_required == "none" or question_required == "require"
         ):
             raise forms.ValidationError(
-                "If you select 'always optional' or 'always required' in Question required "
-                "you shouldn't select the date and time deadline."
+                _("If you select 'always optional' or 'always required' in Question required "
+                "you shouldn't select the date and time deadline.")
             )
 
     class Meta:

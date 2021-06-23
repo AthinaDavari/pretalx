@@ -226,7 +226,7 @@ class Question(LogMixin, models.Model):
 
     @property
     def required(self):
-        
+
         now = timezone.now()
         if self.question_required == "require":
             require_question = True

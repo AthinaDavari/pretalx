@@ -158,12 +158,10 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (not deadline) and (
-            question_required == "require after" or question_required == "freeze after"
-        ):
+        if (not deadline) and (question_required == "require after"):
             raise forms.ValidationError(
                 _(
-                    "If you select 'freeze after deadline' or 'require after deadline' choice you "
+                    "If you select 'require after deadline' choice, you "
                     + "should select the date and time deadline."
                 )
             )
@@ -183,6 +181,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
             "help_text",
             "question_required",
             "deadline",
+            "freeze_after",
             "variant",
             "is_public",
             "is_visible_to_reviewers",
@@ -195,6 +194,7 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
         widgets = {
             "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
             "question_required": forms.RadioSelect(),
+            "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
         }
         field_classes = {
             "variant": SafeModelChoiceField,

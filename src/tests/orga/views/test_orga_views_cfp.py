@@ -550,9 +550,10 @@ def test_can_remind_answered_submission_question(
     count,
 ):
     with scope(event=event):
-        from pretalx.submission.models.question import Answer
+        from pretalx.submission.models.question import Answer, QuestionRequired
 
-        question.required = True
+        question.question_required = QuestionRequired.REQUIRE
+        question.deadline = None
         question.save()
         original_count = QueuedMail.objects.count()
         event.question_template = None

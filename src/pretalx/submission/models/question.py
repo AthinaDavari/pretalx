@@ -1,6 +1,5 @@
-from django.utils import timezone
-
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
@@ -228,21 +227,29 @@ class Question(LogMixin, models.Model):
     def required(self):
 
         now = timezone.now()
-        if self.question_required == "require":
+        if self.question_required == QuestionRequired.REQUIRE:
             require_question = True
-        elif self.question_required == "require after":
+        elif self.question_required == QuestionRequired.REQUIRE_AFTER:
             if self.deadline > now:
                 require_question = False
             else:
                 require_question = True
         else:
             require_question = False
-
+        # Question should become optional in order to be frozen
         if self.freeze_after and (self.freeze_after <= now):
             require_question = False
 
         return require_question
 
+    @property
+    def disabled(self):
+        now = timezone.now()
+        disable_question = False
+        # If deadline of freeze after has passed, disable question
+        if self.freeze_after and (self.freeze_after <= now):
+            disable_question = True
+        return disable_question
 
     class urls(EventUrls):
         base = "{self.event.cfp.urls.questions}{self.pk}/"

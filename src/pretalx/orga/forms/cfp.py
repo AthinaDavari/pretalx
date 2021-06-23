@@ -16,6 +16,7 @@ from pretalx.submission.models import (
     SubmitterAccessCode,
     Track,
 )
+from pretalx.submission.models.question import QuestionRequired
 
 
 class CfPSettingsForm(ReadOnlyFlag, I18nFormMixin, HierarkeyForm):
@@ -157,14 +158,14 @@ class QuestionForm(ReadOnlyFlag, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (not deadline) and (question_required == "require after"):
+        if (not deadline) and (question_required == QuestionRequired.REQUIRE_AFTER):
             raise forms.ValidationError(
                 _(
                     "If you select 'require after deadline' choice, you "
                     + "should select the date and time deadline."
                 )
             )
-        if deadline and (question_required == "none" or question_required == "require"):
+        if deadline and (question_required == QuestionRequired.NONE or question_required == QuestionRequired.REQUIRE):
             raise forms.ValidationError(
                 _(
                     "If you select 'always optional' or 'always required' in Question required "

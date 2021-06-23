@@ -452,9 +452,7 @@ class ReminderFilterForm(QuestionFilterForm):
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
-        ).exclude(
-            Q(question_required="freeze after") & Q(deadline__lt=dt.datetime.now())
-        )
+        ).exclude(Q(freeze_after__lt=dt.datetime.now())) # cannot use directly property 'disabled'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -221,6 +223,27 @@ class Question(LogMixin, models.Model):
     )
     objects = ScopedManager(event="event", _manager_class=QuestionManager)
     all_objects = ScopedManager(event="event", _manager_class=AllQuestionManager)
+
+    @property
+    def required(self):
+        if self.question_required == "require":
+            require_question = True
+        elif self.question_required == "require after":
+            now = timezone.now()
+            if self.deadline > now:
+                require_question = False
+            else:
+                require_question = True
+        elif self.freeze_after:
+            now = timezone.now()
+            if self.freeze_after > now:
+                require_question = True
+            else:
+                require_question = False
+        else:
+            require_question = False
+        return require_question
+
 
     class urls(EventUrls):
         base = "{self.event.cfp.urls.questions}{self.pk}/"

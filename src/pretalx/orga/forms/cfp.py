@@ -1,5 +1,4 @@
-import datetime as dt
-
+from django.utils import timezone
 from django import forms
 from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
@@ -452,7 +451,8 @@ class ReminderFilterForm(QuestionFilterForm):
         return Question.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
-        ).exclude(Q(freeze_after__lt=dt.datetime.now())) # cannot use directly property 'disabled'
+
+        ).exclude(Q(freeze_after__lt=timezone.now())) # cannot use directly property 'disabled'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

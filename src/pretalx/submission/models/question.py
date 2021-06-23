@@ -226,22 +226,21 @@ class Question(LogMixin, models.Model):
 
     @property
     def required(self):
+        
+        now = timezone.now()
         if self.question_required == "require":
             require_question = True
         elif self.question_required == "require after":
-            now = timezone.now()
             if self.deadline > now:
                 require_question = False
             else:
                 require_question = True
-        elif self.freeze_after:
-            now = timezone.now()
-            if self.freeze_after > now:
-                require_question = True
-            else:
-                require_question = False
         else:
             require_question = False
+
+        if self.freeze_after and (self.freeze_after <= now):
+            require_question = False
+
         return require_question
 
 

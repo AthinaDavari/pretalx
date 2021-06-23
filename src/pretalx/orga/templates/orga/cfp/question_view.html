@@ -46,18 +46,8 @@
                         {{ question.get_target_display }}
                     </td>
                     <td>
-                        {% if question.question_required == "require" %}
-                            {% translate "always" %}
-                        {% elif question.question_required == "require after"%}
-                            {% translate "after" %}
-                        {% elif question.question_required == "freeze after"%}
-                            {% translate "before" %}
-                        {% else %}
-                            {% translate "never" %}
-                        {% endif %}
-                        {% if question.deadline %}
-                            {{ question.deadline }}
-                        {% endif %}
+                        <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
+                        </i>
                     </td>
                     <td>
                         <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
